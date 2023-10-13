@@ -94,6 +94,10 @@ select {
   cursor: not-allowed;
 }
 
+.action-btn:active{
+  transform: translateY(2px);
+}
+
 .action-grp {
   position: relative;
   left: 80%;
