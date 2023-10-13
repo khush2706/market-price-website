@@ -64,7 +64,7 @@ const Table = () => {
     setLoading(true)
     const url = `${baseURL}?access_key=${apiKey}&symbols=${type}&date_from=${from}&date_to=${to}&limit=1000&offset=${offset}`
     fetch(url, {
-      referrerPolicy: 'unsafe_url'
+      referrerPolicy: 'unsafe-url'
     })
       .then((res) => {
         if (!res.ok) {
