@@ -1,0 +1,63 @@
+.app {
+  min-height: 100vh;
+  background-color: #000000;
+  background-image: radial-gradient(at 47% 33%, hsl(135.85, 33%, 24%) 0, transparent 59%),
+    radial-gradient(at 82% 65%, hsl(297.4, 71%, 11%) 0, transparent 55%);
+  padding: 2em 4.5em;
+  overflow-x: hidden;
+}
+
+.heading {
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 40px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #080808; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #1d4524; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #093a0c; 
+}
+@media(max-width: 1440px){
+  .app{
+    padding-bottom: 100px;
+  }
+}
+
+@media(max-width: 1024px){
+  .app{
+    padding-bottom: 500px;
+  }
+}
+
+@media(max-width:539px){
+  .app{
+    padding: 2em;
+    padding-bottom: 200px;
+  }
+  .heading{
+    text-align: center;
+  }
+}
+
+@media(max-width:376px){
+  .app{
+    padding: 1em;
+    padding-bottom: 200px;
+  }
+}
+
+
