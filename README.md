@@ -1,8 +1,13 @@
-# React + Vite
+# Oorjan Assignment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## About
+This is a frontend assignment for oorjan technologies. The app is made using Vite + React. 
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- ESLint and Prettier for code linting and formatting
+- Fully responsive
+- `from` and `to` calender inputs validaion so that if we select a date in `from` the `to` calender will only have valid selectable dates after the `from` date and vice versa. Also both the calenders will only show dates upto 30 yrs from the current date since the API only has the data for 30 yrs of time.
+- API response catching to reduce the API requests. The app fetches first 1000 responses from the API, and if after that the user requires more responses(a check is performed to see if there is more data in the API) another request is made to get the data from 1001 entry to the next 1000 entries.
+- Error handling for API responses
+- Loading animation
+- Well Structured Code
