@@ -2,24 +2,21 @@ import ParaLoader from '../paraLoader/ParaLoader'
 import './TableLoader.css'
 
 const TableLoader = () => {
-  function getRows(num) {
-    const array = []
-
-    for (var i = 1; i <= num; i++) {
-      array.push(
-        <div className="row-loader">
-          <ParaLoader />
-          <ParaLoader />
-          <ParaLoader />
-        </div>
-      )
-    }
-
-    return array
-  }
   return (
     <>
-      <div className="table-loader">{getRows(6)}</div>
+      <div className="table-loader">
+        {Array(6)
+          .fill()
+          .map((i, ind) => {
+            return (
+              <div className="row-loader" key={ind}>
+                <ParaLoader />
+                <ParaLoader />
+                <ParaLoader />
+              </div>
+            )
+          })}
+      </div>
     </>
   )
 }

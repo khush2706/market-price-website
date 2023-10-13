@@ -19,15 +19,51 @@ const Table = () => {
   const { currentFormattedDate, pastFormattedDate } = getThirtyYear()
   const recordsPerPage = 7
   const apiKey = import.meta.env.VITE_API_KEY
+  const displayTableData = data && data.length !== 0 && !error
+  const disablePrev = count === 1 || !data.length
+  const disableNext =
+    (count === Math.ceil(data?.length / recordsPerPage) &&
+      apiPaginationInfo?.count + apiPaginationInfo?.offset === apiPaginationInfo?.total) ||
+    !data.length
+  const displayActionBtns = data.length > 7 && !error
+
+  function handleFromChange(e) {
+    setToMin(getYesterdayTomorrow(e.target.value, 'tomorrow'))
+    setFrom(e.target.value)
+  }
+
+  function handleToChange(e) {
+    setFromMax(getYesterdayTomorrow(e.target.value, 'yesterday'))
+    setTo(e.target.value)
+  }
+
+  function handleTypeChange(e) {
+    setType(e.target.value)
+  }
+
+  function handlePrevious() {
+    setCount((state) => {
+      return state - 1
+    })
+  }
+
+  function handleNext() {
+    if (count != Math.ceil(data?.length / recordsPerPage)) {
+      setCount((state) => {
+        return state + 1
+      })
+    } else if (
+      count === Math.ceil(data?.length / recordsPerPage) &&
+      apiPaginationInfo?.count + apiPaginationInfo?.offset < apiPaginationInfo?.total
+    ) {
+      getApiCall(apiPaginationInfo?.offset + apiPaginationInfo?.count, data)
+    }
+  }
 
   function getApiCall(offset, _data = data) {
     setLoading(true)
-    fetch(
-      `${baseURL}?access_key=${apiKey}&symbols=${type}&date_from=${from}&date_to=${to}&limit=10&offset=${offset}`,
-      {
-        method: 'GET'
-      }
-    )
+    const url = `${baseURL}?access_key=${apiKey}&symbols=${type}&date_from=${from}&date_to=${to}&limit=10&offset=${offset}`
+    fetch(url)
       .then((res) => {
         if (!res.ok) {
           return res.json().then((error) => {
@@ -36,20 +72,16 @@ const Table = () => {
         } else return res.json()
       })
       .then((res) => {
-        console.log({ res })
         setError(null)
         setApiPaginationInfo(res.pagination)
         if (!res || !res.data.length) throw new Error('404 No results found.')
         let formatData = formatTableData(res, _data)
-        console.log({ formatData })
         setData((state) => [...state, ...formatData])
-        setLoading(false)
       })
       .catch((e) => {
-        console.log(e)
         setError(e.message)
-        setLoading(false)
       })
+      .finally(() => setLoading(false))
   }
 
   function handleSubmit(e) {
@@ -83,10 +115,7 @@ const Table = () => {
             min={fromMin}
             max={fromMax}
             value={from}
-            onChange={(e) => {
-              setToMin(getYesterdayTomorrow(e.target.value, 'tomorrow'))
-              setFrom(e.target.value)
-            }}
+            onChange={handleFromChange}
             required
           />
         </div>
@@ -98,23 +127,13 @@ const Table = () => {
             min={toMin}
             max={toMax}
             value={to}
-            onChange={(e) => {
-              setFromMax(getYesterdayTomorrow(e.target.value, 'yesterday'))
-              setTo(e.target.value)
-            }}
+            onChange={handleToChange}
             required
           />
         </div>
         <div className="filter type">
           <label htmlFor="type">Type of Stock</label>
-          <select
-            name="type"
-            id="type"
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value)
-            }}
-            required>
+          <select name="type" id="type" value={type} onChange={handleTypeChange} required>
             <option className="option" value="AAPL">
               AAPL
             </option>
@@ -144,9 +163,7 @@ const Table = () => {
               <hr />
             </div>
             {error && <div className="error">ERROR: {error} Please try again</div>}
-            {data &&
-              data.length !== 0 &&
-              !error &&
+            {displayTableData &&
               data?.slice((count - 1) * recordsPerPage, count * recordsPerPage)?.map((item) => {
                 return (
                   <div key={item?.date} className="row-group table-data">
@@ -160,38 +177,12 @@ const Table = () => {
                 )
               })}
           </div>
-          {data.length > 7 && (
+          {displayActionBtns && (
             <div className="action-grp">
-              <button
-                className="action-btn"
-                onClick={() =>
-                  setCount((state) => {
-                    return state - 1
-                  })
-                }
-                disabled={count === 1 || !data.length}>
+              <button className="action-btn" onClick={handlePrevious} disabled={disablePrev}>
                 Prev
               </button>
-              <button
-                className="action-btn"
-                onClick={() => {
-                  if (count != Math.ceil(data?.length / recordsPerPage)) {
-                    setCount((state) => {
-                      return state + 1
-                    })
-                  } else if (
-                    count === Math.ceil(data?.length / recordsPerPage) &&
-                    apiPaginationInfo?.count + apiPaginationInfo?.offset < apiPaginationInfo?.total
-                  ) {
-                    getApiCall(apiPaginationInfo?.offset + apiPaginationInfo?.count, data)
-                  }
-                }}
-                disabled={
-                  (count === Math.ceil(data?.length / recordsPerPage) &&
-                    apiPaginationInfo?.count + apiPaginationInfo?.offset ===
-                      apiPaginationInfo?.total) ||
-                  !data.length
-                }>
+              <button className="action-btn" onClick={handleNext} disabled={disableNext}>
                 Next
               </button>
             </div>
